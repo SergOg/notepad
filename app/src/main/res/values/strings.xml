@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Lesson6_Notepad</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="first_note_title">First note title</string>
+    <string name="first_note_content">First note content</string>
+    <string name="second_note_title">Second note title</string>
+    <string name="second_note_content">Second note content</string>
+    <string name="third_note_title">Third node title</string>
+    <string name="third_note_content">Third note content</string>
+    <string name="note_title">Node title</string>
+    <string name="note_content">Note content</string>
 </resources>
