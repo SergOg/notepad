@@ -1,25 +1,23 @@
 package ru.geekbrains.lesson6_notepad;
 
-import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Locale;
+import java.util.Objects;
 
 public class ListNoteFragment extends Fragment {
 
@@ -34,7 +32,7 @@ public class ListNoteFragment extends Fragment {
         super.onSaveInstanceState(outState);
     }
 
-    // activity создана, можно к ней обращаться. Выполним начальные действия
+/*    // activity создана, можно к ней обращаться. Выполним начальные действия
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -50,7 +48,7 @@ public class ListNoteFragment extends Fragment {
         if (isLandscape) {
             showLandContent(currentNote);
         }
-    }
+    }*/
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -63,6 +61,21 @@ public class ListNoteFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initList(view);
+        RecyclerView recyclerView = view.findViewById(R.id.notes_recycler_view);
+        initRecyclerView(recyclerView, notes);
+
+        // Определение, можно ли будет расположить текст в другом фрагменте
+        isLandscape = getResources().getConfiguration().orientation
+                == Configuration.ORIENTATION_LANDSCAPE;
+        if (savedInstanceState != null) {
+            currentNote = savedInstanceState.getParcelable(ContentFragment.CURRENT_NOTE);
+        } else {
+            currentNote = notes[0];
+        }
+        // Если можно вывести рядом текст, то сделаем это
+        if (isLandscape) {
+            showLandContent(currentNote);
+        }
     }
 
     // создаём список на экране
@@ -71,11 +84,20 @@ public class ListNoteFragment extends Fragment {
                 new Note(getString(R.string.first_note_title), getString(R.string.first_note_content), Calendar.getInstance()),
                 new Note(getString(R.string.second_note_title), getString(R.string.second_note_content), Calendar.getInstance()),
                 new Note(getString(R.string.third_note_title), getString(R.string.third_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.fourth_note_title), getString(R.string.fourth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.fifth_note_title), getString(R.string.fifth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.sixth_note_title), getString(R.string.sixth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.seventh_note_title), getString(R.string.seventh_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.eighth_note_title), getString(R.string.eighth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.ninth_note_title), getString(R.string.ninth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.tenth_note_title), getString(R.string.tenth_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.eleventh_note_title), getString(R.string.eleventh_note_content), Calendar.getInstance()),
+                new Note(getString(R.string.twelfth_note_title), getString(R.string.twelfth_note_content), Calendar.getInstance()),
         };
         // В этом цикле создаём элемент TextView, заполняем его значениями, и добавляем на экран.
         // Кроме того, создаём обработку касания на элемент
 
-        for (Note note : notes) {
+/*        for (Note note : notes) {
             Context context = getContext();
             if (context != null) {
                 LinearLayout linearView = (LinearLayout) view;      //наш view кастим в LinearLayout
@@ -89,14 +111,25 @@ public class ListNoteFragment extends Fragment {
                 linearView.addView(secondTextView);
                 firstTextView.setPadding(0, 30, 0, 0);
 
-                firstTextView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        showContent(note);
-                    }
-                });
+                firstTextView.setOnClickListener(v -> showContent(note));
             }
-        }
+        }*/
+    }
+
+    private void initRecyclerView(RecyclerView recyclerView, Note[] notes) {
+        recyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        NotesAdapter adapter = new NotesAdapter(notes);
+        adapter.setOnItemClickListener((position, note) -> {
+            currentNote = note;
+            showContent(currentNote);
+        });
+        recyclerView.setAdapter(adapter);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(requireContext(),
+                LinearLayoutManager.VERTICAL);
+        itemDecoration.setDrawable(Objects.requireNonNull(ContextCompat.getDrawable(getContext(), R.drawable.separator)));
+        recyclerView.addItemDecoration(itemDecoration);
     }
 
     private void showContent(Note currentNote) {
@@ -109,29 +142,22 @@ public class ListNoteFragment extends Fragment {
 
     // Показать text в ландшафтной ориентации
     private void showLandContent(Note currentNote) {
-        // Создаём новый фрагмент с текущей позицией для вывода текста
-        ContentFragment contentFragment = ContentFragment.newInstance(currentNote);
-
-        // Выполняем транзакцию по замене фрагмента
-        FragmentActivity context = getActivity();
-        if (context != null) {
-            FragmentManager fragmentManager = context.getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.note_content, contentFragment); // замена фрагмента
-            fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            fragmentTransaction.commit();
-        }
+        ContentFragment fragment = ContentFragment.newInstance(currentNote);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.note_content, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
     }
 
     // Показать текст в портретной ориентации.
     private void showPortContent(Note currentNote) {
-        // Откроем вторую activity
-        Context context = getContext();
-        if (context != null) {
-            Intent intent = new Intent(context, ContentActivity.class);
-            // и передадим туда параметры
-            intent.putExtra(ContentFragment.CURRENT_NOTE, currentNote);
-            startActivity(intent);
-        }
+        ContentFragment fragment = ContentFragment.newInstance(currentNote);
+        FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.addToBackStack("list_fragment");
+        fragmentTransaction.replace(R.id.list_notes_fragment, fragment);
+        fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        fragmentTransaction.commit();
     }
 }

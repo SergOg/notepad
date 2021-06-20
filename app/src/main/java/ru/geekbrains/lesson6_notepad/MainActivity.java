@@ -1,5 +1,6 @@
 package ru.geekbrains.lesson6_notepad;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,28 +28,43 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if (savedInstanceState == null) {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            ListNoteFragment listFragment = new ListNoteFragment();
-            fragmentTransaction.add(R.id.list_notes_fragment, listFragment);
-            fragmentTransaction.commit();
-        }
+//        if (savedInstanceState == null) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ListNoteFragment listFragment = new ListNoteFragment();
+        fragmentTransaction.replace(R.id.list_notes_fragment, listFragment);
+        fragmentTransaction.commit();
+//        }
 
-        drawerLayout = findViewById(R.id.drawer_layout);
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
         drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_about) {
-                Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
+            int id = item.getItemId();
+            if (navigateMenu(id)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
             }
-            drawerLayout.closeDrawer(GravityCompat.START);
-            return true;
+            return false;
         });
-        toggle.syncState();
+    }
+
+    private boolean navigateMenu(int id) {
+        switch (id) {
+            case R.id.action_main:
+                Toast.makeText(this, getResources().getString(R.string.main), Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.nav_settings:
+                Toast.makeText(this, getResources().getString(R.string.settings), Toast.LENGTH_LONG).show();
+                return true;
+            case R.id.nav_about:
+                Toast.makeText(this, getResources().getString(R.string.about), Toast.LENGTH_LONG).show();
+                return true;
+        }
+        return false;
     }
 
     @Override
@@ -103,5 +119,9 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
     public boolean onMenuItemClick(MenuItem item) {
         Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
         return false;
+    }
+
+    private boolean checkLandScapeOrientation() {
+        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 }
