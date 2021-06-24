@@ -5,9 +5,11 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import ru.geekbrains.lesson6_notepad.ui.ContentFragment;
+
 public class ContentActivity extends AppCompatActivity {
 
-    @Override
+/*    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content);
@@ -26,5 +28,5 @@ public class ContentActivity extends AppCompatActivity {
                     .beginTransaction()
                     .replace(R.id.fragment_container, contentFragment).commit();
         }
-    }
+    }*/
 }

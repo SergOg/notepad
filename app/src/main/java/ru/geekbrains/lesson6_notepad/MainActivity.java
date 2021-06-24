@@ -1,6 +1,5 @@
 package ru.geekbrains.lesson6_notepad;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,16 +16,30 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.navigation.NavigationView;
 
-public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuItemClickListener {
+import java.util.Objects;
+
+import ru.geekbrains.lesson6_notepad.observe.Publisher;
+import ru.geekbrains.lesson6_notepad.ui.ListNoteFragment;
+
+public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
+    private Navigation navigation;
+    private Publisher publisher = new Publisher();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        navigation = new Navigation(getSupportFragmentManager());
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+        getNavigation().addFragment(ListNoteFragment.newInstance(), false);
 
 //        if (savedInstanceState == null) {
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -52,6 +65,20 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
+    public Navigation getNavigation() {
+        return navigation;
+    }
+
+    public Publisher getPublisher() {
+        return publisher;
+    }
+
     private boolean navigateMenu(int id) {
         switch (id) {
             case R.id.action_main:
@@ -71,19 +98,13 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
-        SearchView searchView = (SearchView) search.getActionView();
+        /*        SearchView searchView = (SearchView) search.getActionView();*/
 
-        MenuItem sort = menu.findItem(R.id.menu_sort);
-        MenuItem addPhoto = menu.findItem(R.id.menu_add_photo);
-        MenuItem send = menu.findItem(R.id.menu_send);
-
-        send.setOnMenuItemClickListener(this);
-        addPhoto.setOnMenuItemClickListener(this);
-        sort.setOnMenuItemClickListener(this);
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        SearchView searchText = (SearchView) search.getActionView();
+        searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                Toast.makeText(MainActivity.this, query, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, query, Toast.LENGTH_SHORT).show();
                 return true;
             }
 
@@ -93,6 +114,26 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
                 return true;
             }
         });
+
+        MenuItem sort = menu.findItem(R.id.menu_sort);
+        sort.setOnMenuItemClickListener(item -> {
+            Toast.makeText(MainActivity.this, R.string.menu_sort, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        MenuItem addPhoto = menu.findItem(R.id.menu_add_photo);
+        addPhoto.setOnMenuItemClickListener(item -> {
+            Toast.makeText(MainActivity.this, R.string.menu_add_photo, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        MenuItem send = menu.findItem(R.id.menu_send);
+        send.setOnMenuItemClickListener(item -> {
+            Toast.makeText(MainActivity.this, R.string.menu_send, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+/*        send.setOnMenuItemClickListener(this);
+        addPhoto.setOnMenuItemClickListener(this);
+        sort.setOnMenuItemClickListener(this);*/
+
         return true;
     }
 
@@ -115,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
         return super.onOptionsItemSelected(item);
     }*/
 
-    @Override
+/*    @Override
     public boolean onMenuItemClick(MenuItem item) {
         Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
         return false;
@@ -123,5 +164,5 @@ public class MainActivity extends AppCompatActivity implements MenuItem.OnMenuIt
 
     private boolean checkLandScapeOrientation() {
         return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-    }
+    }*/
 }
