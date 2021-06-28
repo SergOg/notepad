@@ -1,4 +1,4 @@
-package ru.geekbrains.lesson6_notepad;
+package ru.geekbrains.lesson6_notepad.data;
 
 import android.content.res.Resources;
 import android.os.Parcel;
@@ -10,7 +10,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Locale;
 
-public class NotesSource implements Parcelable {
+import ru.geekbrains.lesson6_notepad.R;
+
+public class NotesSource implements NotesSourceInterface, Parcelable {
 
     public static final Creator<NotesSource> CREATOR = new Creator<NotesSource>() {
         @Override
@@ -46,10 +48,10 @@ public class NotesSource implements Parcelable {
     public int describeContents() {
         return 0;
     }
-
-    public NotesSource init() {
+    @Override
+    public NotesSourceInterface init(NotesSourceResponse notesSourceResponse) {
         Note[] notesArray = new Note[]{
-                new Note(resources.getString(R.string.first_note_title),resources.getString(R.string.first_note_content), getDateOfCreation()),
+                new Note(resources.getString(R.string.first_note_title), resources.getString(R.string.first_note_content), getDateOfCreation()),
                 new Note(resources.getString(R.string.second_note_title), resources.getString(R.string.second_note_content), getDateOfCreation()),
                 new Note(resources.getString(R.string.third_note_title), resources.getString(R.string.third_note_content), getDateOfCreation()),
                 new Note(resources.getString(R.string.fourth_note_title), resources.getString(R.string.fourth_note_content), getDateOfCreation()),
@@ -63,6 +65,9 @@ public class NotesSource implements Parcelable {
                 new Note(resources.getString(R.string.twelfth_note_title), resources.getString(R.string.twelfth_note_content), getDateOfCreation())
         };
         Collections.addAll(notes, notesArray);
+        if (notesSourceResponse != null) {
+            notesSourceResponse.initialized(this);
+        }
         return this;
     }
 

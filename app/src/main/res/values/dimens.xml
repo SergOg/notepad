@@ -8,4 +8,6 @@
     <dimen name="elevator_item">5dp</dimen>
     <dimen name="text_size_item">25sp</dimen>
     <dimen name="padding_item">10dp</dimen>
+    <dimen name="margin">8dp</dimen>
+
 </resources>

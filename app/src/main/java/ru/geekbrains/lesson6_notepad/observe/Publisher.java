@@ -3,7 +3,7 @@ package ru.geekbrains.lesson6_notepad.observe;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.geekbrains.lesson6_notepad.Note;
+import ru.geekbrains.lesson6_notepad.data.Note;
 
 public class Publisher {
     private List<Observer> observers;

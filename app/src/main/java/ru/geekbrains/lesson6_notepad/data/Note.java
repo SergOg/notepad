@@ -1,17 +1,16 @@
-package ru.geekbrains.lesson6_notepad;
+package ru.geekbrains.lesson6_notepad.data;
 
 
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.util.Calendar;
-
 public class Note implements Parcelable {
+    private String id;
     private String title;
     private String content;
     private String creationDate;
 
-    public Note(String title, String content, String creationDate/*, int color*/) {
+    public Note(String title, String content, String creationDate) {
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
@@ -73,5 +72,13 @@ public class Note implements Parcelable {
 
     public static Creator<Note> getCREATOR() {
         return CREATOR;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

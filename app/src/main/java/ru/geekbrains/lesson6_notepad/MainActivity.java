@@ -20,6 +20,7 @@ import java.util.Objects;
 
 import ru.geekbrains.lesson6_notepad.observe.Publisher;
 import ru.geekbrains.lesson6_notepad.ui.ListNoteFragment;
+import ru.geekbrains.lesson6_notepad.ui.StartFragment;
 
 public class MainActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
@@ -39,15 +40,13 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
-        getNavigation().addFragment(ListNoteFragment.newInstance(), false);
+        getNavigation().addFragment(StartFragment.newInstance(), false);
 
-//        if (savedInstanceState == null) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         ListNoteFragment listFragment = new ListNoteFragment();
         fragmentTransaction.replace(R.id.list_notes_fragment, listFragment);
         fragmentTransaction.commit();
-//        }
 
         DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
         MenuItem search = menu.findItem(R.id.menu_search);
-        /*        SearchView searchView = (SearchView) search.getActionView();*/
 
         SearchView searchText = (SearchView) search.getActionView();
         searchText.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -130,39 +128,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, R.string.menu_send, Toast.LENGTH_SHORT).show();
             return true;
         });
-/*        send.setOnMenuItemClickListener(this);
-        addPhoto.setOnMenuItemClickListener(this);
-        sort.setOnMenuItemClickListener(this);*/
 
         return true;
     }
-
-/*    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.menu_sort){
-            Toast.makeText(this, "Sort selected", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        if (itemId == R.id.menu_send){
-            Toast.makeText(this, "Send selected", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        if (itemId == R.id.menu_add_photo){
-            Toast.makeText(this, "Add photo selected", Toast.LENGTH_LONG).show();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }*/
-
-/*    @Override
-    public boolean onMenuItemClick(MenuItem item) {
-        Toast.makeText(this, item.getTitle().toString(), Toast.LENGTH_LONG).show();
-        return false;
-    }
-
-    private boolean checkLandScapeOrientation() {
-        return getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
-    }*/
 }

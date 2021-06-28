@@ -11,24 +11,25 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import ru.geekbrains.lesson6_notepad.Note;
-import ru.geekbrains.lesson6_notepad.NotesSource;
+import ru.geekbrains.lesson6_notepad.data.Note;
+import ru.geekbrains.lesson6_notepad.data.NotesSource;
 import ru.geekbrains.lesson6_notepad.R;
+import ru.geekbrains.lesson6_notepad.data.NotesSourceInterface;
 
 public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
-    //    private Note[] notes;
     private MyClickListener myClickListener;
-    private NotesSource dataSource;
+    private NotesSourceInterface dataSource;
     private int menuPosition;
     private final Fragment fragment;
 
-
-    public NotesAdapter(NotesSource dataSource, Fragment fragment) {
-        this.dataSource = dataSource;
+    public NotesAdapter(Fragment fragment) {
+        //this.dataSource = dataSource;
         this.fragment = fragment;
+    }
+
+    public void setDataSource(NotesSourceInterface dataSource) {
+        this.dataSource = dataSource;
+        notifyDataSetChanged();
     }
 
     public int getMenuPosition() {
@@ -48,9 +49,6 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull NotesAdapter.ViewHolder holder, int position) {
-/*        holder.getTitleTextView().setText(dataSource.getNote(position).getTitle());
-        //SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy", Locale.getDefault());
-        holder.getDateTextView().setText(dataSource.getNote(position).getCreationDate());*/
         holder.bind(dataSource.getNote(position));
     }
 
@@ -64,36 +62,29 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        private CardView cardView;
+        //private CardView cardView;
         private LinearLayout itemLayout;
         private TextView titleTextView;
         private TextView dateTextView;
 
         public ViewHolder(@NonNull final View itemView) {
             super(itemView);
-            cardView = (CardView) itemView;
+            //cardView = (CardView) itemView;
             itemLayout = itemView.findViewById(R.id.element_of_recycler_view);
             titleTextView = itemView.findViewById(R.id.first_tv_of_item);
             dateTextView = itemView.findViewById(R.id.second_tv_of_item);
 
             registerContextMenu(itemView);
 
-/*            if (fragment != null) {
-                itemView.setOnLongClickListener(v -> {
-                    menuPosition = getLayoutPosition();
-                    return false;
-                });
-                fragment.registerForContextMenu(itemView);
-            }*/
-
             itemLayout.setOnClickListener(v -> {
                 int position = getAdapterPosition();
                 myClickListener.onItemClick(position, dataSource.getNote(position));
             });
 
-            itemLayout.setOnClickListener(v -> {
+            itemLayout.setOnLongClickListener(v -> {
                 menuPosition = getLayoutPosition();
                 itemView.showContextMenu();
+                return true;
             });
         }
 

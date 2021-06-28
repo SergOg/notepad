@@ -3,9 +3,13 @@ package ru.geekbrains.lesson6_notepad.ui;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -18,14 +22,14 @@ import java.util.Locale;
 import java.util.Objects;
 
 import ru.geekbrains.lesson6_notepad.MainActivity;
-import ru.geekbrains.lesson6_notepad.Note;
+import ru.geekbrains.lesson6_notepad.data.Note;
 import ru.geekbrains.lesson6_notepad.R;
 import ru.geekbrains.lesson6_notepad.observe.Publisher;
 
 public class ContentFragment extends Fragment {
 
     public static final String CURRENT_NOTE = "currentNote";
-    public static final String CURRENT_DATA = "currentData";
+    //public static final String CURRENT_DATA = "currentData";
     private Note note;
     private Publisher publisher;
 
@@ -82,7 +86,7 @@ public class ContentFragment extends Fragment {
         contentText = view.findViewById(R.id.note_content);
         dateOfCreationText = view.findViewById(R.id.note_date);
 
-        if (note != null){
+        if (note != null) {
             creationData = note.getCreationDate();
             contentView(view);
         }
@@ -92,10 +96,7 @@ public class ContentFragment extends Fragment {
             creationData = String.format("%s: %s", "Дата создания", formatter.format(Calendar.getInstance().getTime()));
             contentView(view);
         }
-/*        titleText.setText(note.getTitle());
-        contentText.setText(note.getContent());*/
 
-        //view.setBackgroundColor(note.getColor());
         setHasOptionsMenu(true);
         return view;
     }
@@ -103,28 +104,12 @@ public class ContentFragment extends Fragment {
     private void contentView(View view) {
         if (isNewNote) {
             dateOfCreationText.setText(creationData);
-            //view.setBackgroundColor(color);
         } else {
             dateOfCreationText.setText((CharSequence) note.getCreationDate());
             titleText.setText(note.getTitle());
             contentText.setText(note.getContent());
-            //view.setBackgroundColor(note.getColor());
         }
     }
-
-/*    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        // найти в контейнере элемент
-        TextView titleText = view.findViewById(R.id.note_title);
-        TextView noteContentText = view.findViewById(R.id.note_content);
-        TextView dateText = view.findViewById(R.id.note_date);
-
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy", Locale.getDefault());
-        dateText.setText(String.format("%s", formatter.format(note.getCreationDate().getTime())));
-        titleText.setText(note.getTitle());
-        noteContentText.setText(note.getContent());
-    }*/
 
     @Override
     public void onStop() {
@@ -137,12 +122,40 @@ public class ContentFragment extends Fragment {
         super.onDestroy();
         publisher.notifySingle(note);
     }
+
     private Note collectNote() {
         String title = Objects.requireNonNull(this.titleText.getText()).toString();
         String content = Objects.requireNonNull(this.contentText.getText()).toString();
         if (isNewNote) {
             isNewNote = false;
         }
-        return new Note(title, content, creationData);
+        if (note != null) {
+            Note answer = new Note(title, content, creationData);
+            answer.setId(note.getId());
+            return answer;
+        } else {
+            return new Note(title, content, creationData);
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        MenuItem addNote = menu.findItem(R.id.menu_add_note);
+        MenuItem search = menu.findItem(R.id.menu_search);
+        MenuItem sort = menu.findItem(R.id.menu_sort);
+        addNote.setVisible(false);
+        search.setVisible(false);
+        sort.setVisible(false);
+        MenuItem send = menu.findItem(R.id.menu_send);
+        send.setOnMenuItemClickListener(item -> {
+            Toast.makeText(getActivity(), R.string.menu_send, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        MenuItem addPhoto = menu.findItem(R.id.menu_add_photo);
+        addPhoto.setOnMenuItemClickListener(item -> {
+            Toast.makeText(getActivity(), R.string.menu_add_photo, Toast.LENGTH_SHORT).show();
+            return true;
+        });
+        super.onCreateOptionsMenu(menu, inflater);
     }
 }
