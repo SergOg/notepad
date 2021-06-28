@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="nav_header_textSize">18sp</dimen>
+    <dimen name="nav_header_margin">10dp</dimen>
+    <dimen name="nav_header_padding">20dp</dimen>
+    <dimen name="height_item">200dp</dimen>
+    <dimen name="radius_item">15dp</dimen>
+    <dimen name="elevator_item">5dp</dimen>
+    <dimen name="text_size_item">25sp</dimen>
+    <dimen name="padding_item">10dp</dimen>
+    <dimen name="margin">8dp</dimen>
+
+</resources>
