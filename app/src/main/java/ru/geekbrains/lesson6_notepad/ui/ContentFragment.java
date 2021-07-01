@@ -8,6 +8,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,10 +35,10 @@ public class ContentFragment extends Fragment {
     private Note note;
     private Publisher publisher;
 
-    private TextInputEditText titleText;
-    private TextInputEditText contentText;
+    private EditText titleText;
+    private EditText contentText;
     private TextView dateOfCreationText;
-
+    private Button mButtonSave;
     private String creationData;
     private boolean isNewNote = false;
 
@@ -82,8 +84,8 @@ public class ContentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_content, container, false);
 
-        titleText = view.findViewById(R.id.note_title);
-        contentText = view.findViewById(R.id.note_content);
+        titleText = view.findViewById(R.id.edit_title_id);
+        contentText = view.findViewById(R.id.edit_description_id);
         dateOfCreationText = view.findViewById(R.id.note_date);
 
         if (note != null) {
@@ -105,7 +107,7 @@ public class ContentFragment extends Fragment {
         if (isNewNote) {
             dateOfCreationText.setText(creationData);
         } else {
-            dateOfCreationText.setText((CharSequence) note.getCreationDate());
+            dateOfCreationText.setText(note.getCreationDate());
             titleText.setText(note.getTitle());
             contentText.setText(note.getContent());
         }

@@ -48,6 +48,7 @@ public class NotesSource implements NotesSourceInterface, Parcelable {
     public int describeContents() {
         return 0;
     }
+
     @Override
     public NotesSourceInterface init(NotesSourceResponse notesSourceResponse) {
         Note[] notesArray = new Note[]{

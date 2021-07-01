@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class NoteMapping {
+
     public static Note toNote(String id, Map<String, Object> doc) {
         Note answer = new Note((String) doc.get(Fields.TITLE),
                 (String) doc.get(Fields.CONTENT),

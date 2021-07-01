@@ -20,8 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Objects;
 
+import ru.geekbrains.lesson6_notepad.DeleteDialogFragment;
 import ru.geekbrains.lesson6_notepad.MainActivity;
 import ru.geekbrains.lesson6_notepad.Navigation;
+import ru.geekbrains.lesson6_notepad.OnDeleteDialogListener;
 import ru.geekbrains.lesson6_notepad.R;
 import ru.geekbrains.lesson6_notepad.data.NotesSourceFirebase;
 import ru.geekbrains.lesson6_notepad.data.NotesSourceInterface;
@@ -105,9 +107,25 @@ public class ListNoteFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         int position = adapter.getMenuPosition();
+
         if (item.getItemId() == R.id.menu_delete_note) {
-            data.deleteNote(position);
-            adapter.notifyItemRemoved(position);
+            DeleteDialogFragment deleteDlgFragment = new DeleteDialogFragment();
+            deleteDlgFragment.setCancelable(false);
+            deleteDlgFragment.setOnDialogListener(new OnDeleteDialogListener() {
+                @Override
+                public void onDelete() {
+                    data.deleteNote(position);
+                    adapter.notifyItemRemoved(position);
+                    deleteDlgFragment.dismiss();
+                }
+
+                @Override
+                public void onCancelDelete() {
+                    deleteDlgFragment.dismiss();
+                }
+            });
+            deleteDlgFragment.show(requireActivity().getSupportFragmentManager(),
+                    "DeleteFragmentTag");
             return true;
         }
         return super.onContextItemSelected(item);
@@ -122,8 +140,8 @@ public class ListNoteFragment extends Fragment {
         MenuItem addPhoto = menu.findItem(R.id.menu_add_photo);
         search.setVisible(true);
         sort.setVisible(true);
-        send.setVisible(false);
-        addPhoto.setVisible(false);
+        send.setVisible(true);
+        addPhoto.setVisible(true);
 
         addNote.setOnMenuItemClickListener(item -> {
             navigation.addFragment(ContentFragment.newInstance(), true);
